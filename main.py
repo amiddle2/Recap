@@ -9,6 +9,7 @@ from src.edit_questions import edit_questions
 from src.flashcards import flashcards
 from src.home import home
 from src.quiz import quiz
+from src.settings import settings
 from src.study import study
 
 # Get user-specific data directory
@@ -41,6 +42,7 @@ def main(page: ft.Page):
             ft.Tab(text="Flashcards", content=ft.Container()),
             ft.Tab(text="Study", content=ft.Container()),
             ft.Tab(text="Quiz", content=ft.Container()),
+            ft.Tab(text="Settings", content=settings(page)),
         ],
         expand=True,
     )
@@ -60,6 +62,8 @@ def main(page: ft.Page):
                 tabs.tabs[idx].content = study(page, conn)
             case 5:
                 tabs.tabs[idx].content = quiz(page, conn)
+            # case 6:
+            #     tabs.tabs[idx].content = settings(page)
 
         tabs.update()
 
