@@ -36,8 +36,8 @@ def main(page: ft.Page):
     tabs = ft.Tabs(
         tabs=[
             ft.Tab(text="Home", content=home()),
-            ft.Tab(text="Add", content=ft.Container()),
-            ft.Tab(text="Edit", content=ft.Container()),
+            ft.Tab(text="Add Questions", content=ft.Container()),
+            ft.Tab(text="Edit Questions", content=ft.Container()),
             ft.Tab(text="Flashcards", content=ft.Container()),
             ft.Tab(text="Study", content=ft.Container()),
             ft.Tab(text="Quiz", content=ft.Container()),

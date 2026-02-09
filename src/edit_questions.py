@@ -92,7 +92,7 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
     delete_button = ft.ElevatedButton("Delete Question", on_click=delete_question)
     delete_button.visible = False
 
-    edit_button.text = "Edit"
+    edit_button.text = "Confirm Changes"
     edit_button.on_click = edit_question
 
     edit_questions_tab = ft.Tab(

@@ -1,3 +1,4 @@
+import random
 import sqlite3
 
 import flet as ft
@@ -13,6 +14,7 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
 
     cur.execute("SELECT question, correct_answer FROM questions")
     cards = cur.fetchall()
+    random.shuffle(cards)
 
     flashcard = ft.Card(
         content=ft.Container(
@@ -60,13 +62,14 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
             page.update()
 
     def restart_cards(e):
-        nonlocal fc_index
+        nonlocal fc_index, cards
         fc_index = 0
         flashcard.visible = True
         fc_warning.visible = False
         flip_button.visible = True
         next_card_button.visible = True
         restart_cards_button.visible = False
+        random.shuffle(cards)
         update_card()
 
     flip_button = ft.ElevatedButton("Flip Card", on_click=flip_card)
