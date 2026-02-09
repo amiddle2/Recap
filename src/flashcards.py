@@ -29,16 +29,20 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
     )
 
     def update_card():
-        flashcard.content.content.value = cards[fc_index][0]
+        nonlocal card_count
+        flashcard.content.content.value = cards[fc_index][0] if card_count != 0 else ""
         page.update()
 
     def flip_card(e):
         nonlocal fc_index, cards
         question = cards[fc_index][0]
         answer = cards[fc_index][1]
-        flashcard.content.content.value = (
-            answer if flashcard.content.content.value == question else question
-        )
+        if flashcard.content.content.value == question:
+            flashcard.content.content.value = answer
+        elif flashcard.content.content.value == answer:
+            flashcard.content.content.value = question
+        else:
+            flashcard.content.content.value = "Error: Card not Found"
         page.update()
 
     def next_card(e):
@@ -48,6 +52,7 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
             update_card()
         else:
             flashcard.visible = False
+            fc_warning.visible = True
             fc_warning.value = "Flashcards Completed!"
             flip_button.visible = False
             next_card_button.visible = False
@@ -84,4 +89,4 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
         ),
     )
 
-    return flashcards_tab
+    return flashcards_tab.content

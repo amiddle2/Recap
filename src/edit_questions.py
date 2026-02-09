@@ -14,15 +14,9 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
 
     update_question = ft.TextField(hint_text="New Question", width=600)
     update_correct = ft.TextField(hint_text="New Correct Answer", width=600)
-    update_wrong1 = ft.TextField(hint_text="New Wrong Answer 1", width=600)
-    update_wrong2 = ft.TextField(hint_text="New Wrong Answer 2", width=600)
-    update_wrong3 = ft.TextField(hint_text="New Wrong Answer 3", width=600)
 
     update_question.visible = False
     update_correct.visible = False
-    update_wrong1.visible = False
-    update_wrong2.visible = False
-    update_wrong3.visible = False
 
     edit_button = ft.ElevatedButton()
     edit_button.visible = False
@@ -44,9 +38,6 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
 
                 update_question.visible = True
                 update_correct.visible = True
-                update_wrong1.visible = True
-                update_wrong2.visible = True
-                update_wrong3.visible = True
 
                 edit_button.visible = True
                 delete_button.visible = True
@@ -72,29 +63,12 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
                 "UPDATE questions SET correct_answer = ? WHERE question = ?",
                 (update_correct.value, dropdown.value),
             )
-        if update_wrong1.value:
-            cur.execute(
-                "UPDATE questions SET wrong_answer1 = ? WHERE question = ?",
-                (update_wrong1.value, dropdown.value),
-            )
-        if update_wrong2.value:
-            cur.execute(
-                "UPDATE questions SET wrong_answer2 = ? WHERE question = ?",
-                (update_wrong2.value, dropdown.value),
-            )
-        if update_wrong3.value:
-            cur.execute(
-                "UPDATE questions SET wrong_answer3 = ? WHERE question = ?",
-                (update_wrong3.value, dropdown.value),
-            )
+
         if not any(
             val
             for val in (
                 update_question.value,
                 update_correct.value,
-                update_wrong1.value,
-                update_wrong2.value,
-                update_wrong3.value,
             )
         ):
             warning_text3.value = "Please enter the value to be edited"
@@ -131,9 +105,6 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
                 warning_text2,
                 update_question,
                 update_correct,
-                update_wrong1,
-                update_wrong2,
-                update_wrong3,
                 warning_text3,
                 edit_button,
                 delete_button,
@@ -142,4 +113,4 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
         ),
     )
 
-    return edit_questions_tab
+    return edit_questions_tab.content
