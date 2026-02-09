@@ -21,7 +21,7 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
             padding=20,
             alignment=ft.alignment.center,
             content=ft.Text(
-                value=cards[fc_index][0],
+                value="" if card_count == 0 else cards[fc_index][0],
                 size=24,
                 text_align=ft.TextAlign.CENTER,
             ),

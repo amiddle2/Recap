@@ -5,23 +5,7 @@ import flet as ft
 
 def add_question(page: ft.Page, conn: sqlite3.Connection):
     # SQLite Conn
-    conn = sqlite3.connect(
-        r"C:\Users\dmiddleton\Projects\Projects\tools\quizlet_clone\database.db"
-    )
     cur = conn.cursor()
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS questions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        question TEXT NOT NULL,
-        correct_answer TEXT NOT NULL,
-        wrong_answer1 TEXT NOT NULL,
-        wrong_answer2 TEXT NOT NULL,
-        wrong_answer3 TEXT NOT NULL
-        );
-        """
-    )
-    conn.commit()
 
     # Add Questions Tab
     question_input = ft.TextField(hint_text="Enter Question", width=600)
