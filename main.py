@@ -1,3 +1,4 @@
+from pathlib import Path
 import sqlite3
 
 import flet as ft
@@ -6,8 +7,11 @@ from src.edit_questions import edit_questions
 from src.flashcards import flashcards
 from src.quiz import quiz
 
-DB_PATH = ""
+# Create a database file in the user's home directory
+DB_PATH = Path.home() / ".recap" / "recap.db"
 
+# Ensure the directory exists
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 def main(page: ft.Page):
     page.title = "Recap"
