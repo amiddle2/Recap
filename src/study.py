@@ -11,6 +11,7 @@ def study(page: ft.Page, conn: sqlite3.Connection):
     index = 0
     qs = []
     q_count = 0
+    streak = 0
 
     # Radio options
     options = [ft.Radio(label="", value="") for _ in range(4)]
@@ -24,6 +25,9 @@ def study(page: ft.Page, conn: sqlite3.Connection):
 
     check_answer_button = ft.ElevatedButton("Check Answer", visible=False)
     next_button = ft.ElevatedButton("Next Question", visible=False)
+
+    streak_notif = ft.Text()
+    streak_notif.visible = False
 
     def reset_ui():
         choices.value = None
@@ -39,6 +43,7 @@ def study(page: ft.Page, conn: sqlite3.Connection):
         cur.execute("SELECT question, correct_answer FROM questions")
         qs = cur.fetchall()
         q_count = len(qs)
+        random.shuffle(qs)
 
         if q_count < 4:
             empty_warning.visible = True
@@ -82,6 +87,7 @@ def study(page: ft.Page, conn: sqlite3.Connection):
         choices.value = None
 
     def check_answer(e):
+        nonlocal streak
         if choices.value is None:
             correctness.value = "Pick an answer first"
             correctness.visible = True
@@ -92,9 +98,15 @@ def study(page: ft.Page, conn: sqlite3.Connection):
         if choices.value == correct_value:
             correctness.value = "Correct!"
             next_button.visible = True
+            streak += 1
+            if streak >= 3:
+                streak_notif.value = f"{streak} in a row!"
+                streak_notif.visible = True
         else:
             correctness.value = "Incorrect"
             next_button.visible = False
+            streak = 0
+            streak_notif.visible = False
 
         page.update()
 
@@ -109,6 +121,7 @@ def study(page: ft.Page, conn: sqlite3.Connection):
             next_button.visible = False
             correctness.visible = False
             end_text.visible = True
+        streak_notif.visible = False
 
         page.update()
 
@@ -132,6 +145,7 @@ def study(page: ft.Page, conn: sqlite3.Connection):
                     correctness,
                     next_button,
                     end_text,
+                    streak_notif,
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=20,
