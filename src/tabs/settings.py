@@ -21,7 +21,9 @@ def settings(page: ft.Page):
     dark_mode_switch.on_change = toggle_theme
 
     def save_settings(e):
+        # New settings
         data["settings"]["dark_mode"] = dark_mode_switch.value
+        # Update settings.json
         with open(SETTINGS_FILE, "w") as file:
             json.dump(data, file, indent=4)
         save_notif.visible = True
