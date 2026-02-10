@@ -24,7 +24,6 @@
 3. **Quiz Yourself**  
    Start a quiz session to reinforce learning.
 
-*Include screenshots or examples here once available.*
 
 ---
 
