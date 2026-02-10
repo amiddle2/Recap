@@ -4,13 +4,13 @@ from pathlib import Path
 import flet as ft
 import platformdirs
 
-from src.add_question import add_question
-from src.edit_questions import edit_questions
-from src.flashcards import flashcards
-from src.home import home
-from src.quiz import quiz
-from src.settings import settings
-from src.study import study
+from src.tabs.add_question import add_question
+from src.tabs.edit_questions import edit_questions
+from src.tabs.flashcards import flashcards
+from src.tabs.home import home
+from src.tabs.quiz import quiz
+from src.tabs.settings import settings
+from src.tabs.study import study
 
 # Get user-specific data directory
 data_dir = Path(platformdirs.user_data_dir("Recap", "YourCompanyName"))
@@ -62,6 +62,8 @@ def main(page: ft.Page):
                 tabs.tabs[idx].content = study(page, conn)
             case 5:
                 tabs.tabs[idx].content = quiz(page, conn)
+            case 6:
+                tabs.tabs[idx].content = settings(page)
 
         tabs.update()
 
