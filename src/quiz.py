@@ -113,19 +113,25 @@ def quiz(page: ft.Page, conn: sqlite3.Connection):
     begin_button = ft.ElevatedButton("Take Quiz", on_click=begin_quiz)
     next_button.on_click = next_question
 
-    quiz_tab = ft.Tab(
-        text="Quiz",
-        content=ft.Column(
-            [
-                begin_button,
-                empty_warning,
-                question,
-                choices,
-                next_button,
-                end_text,
-                score_text,
-                warning_text,
-            ]
+    return ft.Container(
+        expand=True,
+        alignment=ft.alignment.center,
+        padding=40,
+        content=ft.Container(
+            width=600,
+            content=ft.Column(
+                controls=[
+                    begin_button,
+                    empty_warning,
+                    question,
+                    choices,
+                    next_button,
+                    end_text,
+                    score_text,
+                    warning_text,
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=20,
+            ),
         ),
     )
-    return quiz_tab.content

@@ -77,19 +77,22 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
     restart_cards_button = ft.ElevatedButton("Restart", on_click=restart_cards)
     restart_cards_button.visible = False
 
-    flashcards_tab = ft.Tab(
-        "Flashcards",
-        content=ft.Column(
-            [
-                ft.Container(height=50),
-                flashcard,
-                flip_button,
-                next_card_button,
-                fc_warning,
-                restart_cards_button,
-            ],
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    return ft.Container(
+        expand=True,
+        alignment=ft.alignment.center,
+        padding=40,
+        content=ft.Container(
+            width=600,
+            content=ft.Column(
+                controls=[
+                    flashcard,
+                    flip_button,
+                    next_card_button,
+                    fc_warning,
+                    restart_cards_button,
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=20,
+            ),
         ),
     )
-
-    return flashcards_tab.content

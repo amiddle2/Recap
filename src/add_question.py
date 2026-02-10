@@ -42,17 +42,22 @@ def add_question(page: ft.Page, conn: sqlite3.Connection):
 
     add_button = ft.ElevatedButton("Add Question", on_click=add_question)
 
-    add_question_tab = ft.Tab(
-        "Add Question",
-        content=ft.Column(
-            [
-                question_input,
-                correct_input,
-                add_button,
-                warning_text1,
-                success_text1,
-            ]
+    return ft.Container(
+        expand=True,
+        alignment=ft.alignment.center,
+        padding=40,
+        content=ft.Container(
+            width=600,
+            content=ft.Column(
+                controls=[
+                    question_input,
+                    correct_input,
+                    add_button,
+                    warning_text1,
+                    success_text1,
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=20,
+            ),
         ),
     )
-
-    return add_question_tab.content

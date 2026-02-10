@@ -62,8 +62,6 @@ def main(page: ft.Page):
                 tabs.tabs[idx].content = study(page, conn)
             case 5:
                 tabs.tabs[idx].content = quiz(page, conn)
-            # case 6:
-            #     tabs.tabs[idx].content = settings(page)
 
         tabs.update()
 

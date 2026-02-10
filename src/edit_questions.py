@@ -113,4 +113,27 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
         ),
     )
 
-    return edit_questions_tab.content
+    return ft.Container(
+        expand=True,
+        alignment=ft.alignment.center,
+        padding=40,
+        content=ft.Container(
+            width=600,
+            content=ft.Column(
+                controls=[
+                    question_search,
+                    dropdown,
+                    search_button,
+                    warning_text2,
+                    update_question,
+                    update_correct,
+                    warning_text3,
+                    edit_button,
+                    delete_button,
+                    delete_message,
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=20,
+            ),
+        ),
+    )

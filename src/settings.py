@@ -12,6 +12,14 @@ def settings(page: ft.Page):
         label="Dark Mode", value=False, on_change=toggle_dark_mode
     )
 
-    settings_tab = ft.Tab(content=ft.Column([dark_mode_switch]))
-
-    return settings_tab.content
+    return ft.Container(
+        expand=True,
+        padding=40,
+        content=ft.Container(
+            width=600,
+            content=ft.Column(
+                controls=[dark_mode_switch],
+                spacing=20,
+            ),
+        ),
+    )

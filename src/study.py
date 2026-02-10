@@ -116,19 +116,25 @@ def study(page: ft.Page, conn: sqlite3.Connection):
     check_answer_button.on_click = check_answer
     next_button.on_click = next_question
 
-    study_tab = ft.Tab(
-        text="Study",
-        content=ft.Column(
-            [
-                begin_button,
-                empty_warning,
-                question,
-                choices,
-                check_answer_button,
-                correctness,
-                next_button,
-                end_text,
-            ]
+    return ft.Container(
+        expand=True,
+        alignment=ft.alignment.center,
+        padding=40,
+        content=ft.Container(
+            width=600,
+            content=ft.Column(
+                controls=[
+                    begin_button,
+                    empty_warning,
+                    question,
+                    choices,
+                    check_answer_button,
+                    correctness,
+                    next_button,
+                    end_text,
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=20,
+            ),
         ),
     )
-    return study_tab.content
