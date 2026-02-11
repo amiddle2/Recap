@@ -1,12 +1,12 @@
 import random
-import sqlite3
 
 import flet as ft
+import sqlalchemy.orm as orm
+
+from src.tables.question import Questions
 
 
-def study(page: ft.Page, conn: sqlite3.Connection):
-    cur = conn.cursor()
-
+def study(page: ft.Page, db: orm.Session):
     correct_value = None
     index = 0
     qs = []
@@ -40,8 +40,7 @@ def study(page: ft.Page, conn: sqlite3.Connection):
         nonlocal qs, q_count, index
         index = 0
 
-        cur.execute("SELECT question, correct_answer FROM questions")
-        qs = cur.fetchall()
+        qs = db.query(Questions).all()
         q_count = len(qs)
         random.shuffle(qs)
 
@@ -63,12 +62,13 @@ def study(page: ft.Page, conn: sqlite3.Connection):
     def load_question():
         nonlocal index, correct_value
 
-        q, c = qs[index]
+        q = qs[index].question
+        c = qs[index].correct_answer
         index += 1
 
-        # Get all possible answers
-        cur.execute("SELECT correct_answer FROM questions")
-        all_answers = [row[0] for row in cur.fetchall()]
+        all_answers = [
+            q.correct_answer for q in db.query(Questions.correct_answer).all()
+        ]
         all_answers.remove(c)
 
         wrong_answers = random.sample(all_answers, 3)

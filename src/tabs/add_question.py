@@ -1,11 +1,10 @@
-import sqlite3
-
 import flet as ft
+import sqlalchemy.orm as orm
+
+from src.tables.question import Questions
 
 
-def add_question(page: ft.Page, conn: sqlite3.Connection):
-    # SQLite Conn
-    cur = conn.cursor()
+def add_question(page: ft.Page, db: orm.Session):
 
     # Add Questions Tab
     question_input = ft.TextField(hint_text="Enter Question", width=600)
@@ -17,21 +16,15 @@ def add_question(page: ft.Page, conn: sqlite3.Connection):
 
     def add_question(e):
         success_text1.visible = False
-        sql = """
-            INSERT INTO questions (question, correct_answer)
-            VALUES (?, ?);
-        """
         if question_input.value and correct_input.value:
             warning_text1.value = ""
             page.update()
-            cur.execute(
-                sql,
-                (
-                    question_input.value,
-                    correct_input.value,
-                ),
+            new_question = Questions(
+                question=question_input.value, correct_answer=correct_input.value
             )
-            conn.commit()
+            db.add(new_question)
+            db.commit()
+            db.refresh(new_question)
             question_input.value = ""
             correct_input.value = ""
             success_text1.visible = True

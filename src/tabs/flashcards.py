@@ -2,18 +2,19 @@ import random
 import sqlite3
 
 import flet as ft
+import sqlalchemy.orm as orm
+from sqlalchemy import func
+
+from src.tables.question import Questions
 
 
-def flashcards(page: ft.Page, conn: sqlite3.Connection):
-    cur = conn.cursor()
-
+def flashcards(page: ft.Page, db: orm.Session):
     fc_index = 0
-    cur.execute("SELECT COUNT(*) FROM questions")
-    card_count = cur.fetchall()[0][0]
     fc_warning = ft.Text()
 
-    cur.execute("SELECT question, correct_answer FROM questions")
-    cards = cur.fetchall()
+    card_count = db.query(func.count(Questions.id)).scalar()
+
+    cards = db.query(Questions).all()
     random.shuffle(cards)
 
     flashcard = ft.Card(
@@ -23,7 +24,7 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
             padding=20,
             alignment=ft.alignment.center,
             content=ft.Text(
-                value="" if card_count == 0 else cards[fc_index][0],
+                value="" if card_count == 0 else cards[fc_index].question,
                 size=24,
                 text_align=ft.TextAlign.CENTER,
             ),
@@ -32,13 +33,15 @@ def flashcards(page: ft.Page, conn: sqlite3.Connection):
 
     def update_card():
         nonlocal card_count
-        flashcard.content.content.value = cards[fc_index][0] if card_count != 0 else ""
+        flashcard.content.content.value = (
+            cards[fc_index].question if card_count != 0 else ""
+        )
         page.update()
 
     def flip_card(e):
         nonlocal fc_index, cards
-        question = cards[fc_index][0]
-        answer = cards[fc_index][1]
+        question = cards[fc_index].question
+        answer = cards[fc_index].correct_answer
         if flashcard.content.content.value == question:
             flashcard.content.content.value = answer
         elif flashcard.content.content.value == answer:

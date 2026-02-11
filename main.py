@@ -1,9 +1,9 @@
-import sqlite3
 from pathlib import Path
 
 import flet as ft
 import platformdirs
 
+from src.core.database import init_db
 from src.tabs.add_question import add_question
 from src.tabs.edit_questions import edit_questions
 from src.tabs.flashcards import flashcards
@@ -21,18 +21,8 @@ DB_PATH = data_dir / "recap.db"
 
 def main(page: ft.Page):
     page.title = "Recap"
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS questions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        question TEXT NOT NULL,
-        correct_answer TEXT NOT NULL
-        );
-        """
-    )
-    conn.commit()
+    Session = init_db(DB_PATH)
+    db = Session()
 
     tabs = ft.Tabs(
         tabs=[
@@ -53,15 +43,15 @@ def main(page: ft.Page):
             case 0:
                 tabs.tabs[idx].content = home()
             case 1:
-                tabs.tabs[idx].content = add_question(page, conn)
+                tabs.tabs[idx].content = add_question(page, db)
             case 2:
-                tabs.tabs[idx].content = edit_questions(page, conn)
+                tabs.tabs[idx].content = edit_questions(page, db)
             case 3:
-                tabs.tabs[idx].content = flashcards(page, conn)
+                tabs.tabs[idx].content = flashcards(page, db)
             case 4:
-                tabs.tabs[idx].content = study(page, conn)
+                tabs.tabs[idx].content = study(page, db)
             case 5:
-                tabs.tabs[idx].content = quiz(page, conn)
+                tabs.tabs[idx].content = quiz(page, db)
             case 6:
                 tabs.tabs[idx].content = settings(page)
 

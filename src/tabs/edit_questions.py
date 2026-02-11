@@ -1,10 +1,10 @@
-import sqlite3
-
 import flet as ft
+import sqlalchemy.orm as orm
+
+from src.tables.question import Questions
 
 
-def edit_questions(page: ft.Page, conn: sqlite3.Connection):
-    cur = conn.cursor()
+def edit_questions(page: ft.Page, db: orm.Session):
 
     question_search = ft.TextField(hint_text="Search for a question", width=600)
     warning_text2 = ft.Text("")
@@ -24,11 +24,13 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
 
     def search_questions(e):
         if question_search.value:
-            sql = "SELECT question FROM questions WHERE question LIKE ?"
             search_term = f"%{question_search.value}%"
 
-            cur.execute(sql, (search_term,))
-            questions = cur.fetchall()
+            questions = (
+                db.query(Questions.question)
+                .filter(Questions.question.like(search_term))
+                .all()
+            )
 
             if questions:
                 dropdown.options = [ft.dropdown.Option(q[0]) for q in questions]
@@ -53,16 +55,20 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
     search_button = ft.ElevatedButton("Search", on_click=search_questions)
 
     def edit_question(e):
-        if update_question.value:
-            cur.execute(
-                "UPDATE questions SET question = ? WHERE question = ?",
-                (update_question.value, dropdown.value),
+        if dropdown.value:
+            question_obj = (
+                db.query(Questions).filter(Questions.question == dropdown.value).first()
             )
-        if update_correct.value:
-            cur.execute(
-                "UPDATE questions SET correct_answer = ? WHERE question = ?",
-                (update_correct.value, dropdown.value),
-            )
+
+            if question_obj:
+                if update_question.value:
+                    question_obj.question = update_question.value
+
+                if update_correct.value:
+                    question_obj.correct_answer = update_correct.value
+
+                db.commit()
+                db.refresh(question_obj)
 
         if not any(
             val
@@ -75,7 +81,6 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
         else:
             warning_text3.value = "Question altered successfully"
         page.update()
-        conn.commit()
 
     delete_message = ft.Text()
 
@@ -83,35 +88,22 @@ def edit_questions(page: ft.Page, conn: sqlite3.Connection):
         if not dropdown.value:
             return
 
-        sql = "DELETE FROM questions WHERE question = ?"
-        cur.execute(sql, (dropdown.value,))
-        conn.commit()
-        delete_message.value = "Question Successfully Deleted"
-        page.update()
+        question_obj = (
+            db.query(Questions).filter(Questions.question == dropdown.value).first()
+        )
+
+        if question_obj:
+            db.delete(question_obj)
+            db.commit()
+
+            delete_message.value = "Question Successfully Deleted"
+            page.update()
 
     delete_button = ft.ElevatedButton("Delete Question", on_click=delete_question)
     delete_button.visible = False
 
     edit_button.text = "Confirm Changes"
     edit_button.on_click = edit_question
-
-    edit_questions_tab = ft.Tab(
-        "Edit Questions",
-        content=ft.Column(
-            [
-                question_search,
-                dropdown,
-                search_button,
-                warning_text2,
-                update_question,
-                update_correct,
-                warning_text3,
-                edit_button,
-                delete_button,
-                delete_message,
-            ]
-        ),
-    )
 
     return ft.Container(
         expand=True,
